@@ -1,33 +1,47 @@
-// Satisfies requirement of Data-driven experience progression
-class Cache extends Phaser.Scene {
+// Satisfies requirement of Data-driven experience progression prefab3
+
+// Scene Subclasses prefab2
+class SceneCache extends Phaser.Scene {
 	setScore() {
-		this.score = parseInt(localStorage.getItem('score')) || 0;
-		this.scoreText.setText("Score: " + this.score);
+		this.file.score = parseInt(localStorage.getItem('score')) || 0;
+		this.scoreText.setText("Score: " + this.file.score);
+		this.saveFile();
 	}
 
-	save() {
-		this.file = {
-			score: this.score,
-			visits: this.visits
-		};
-		localStorage.setItem('save1', JSON.stringify(this.file));
+	setMuted(muted) {
+		this.file.muted = muted;
+		this.sound.mute = this.file.muted;
+		localStorage.setItem('muted', this.file.muted);
+		this.saveFile();
 	}
 
-	load() {
-		this.file = JSON.parse(localStorage.getItem('save1'));
-		this.score = this.file.score;
-		this.visits = this.file.visits;
+	saveFile() {
+		if (this.file == undefined) {
+			this.file = this.loadFile();
+			return;
+		}
+		localStorage.setItem('saveFile', JSON.stringify(this.file));
+	}
+
+	loadFile() {
+		let loadedFile = localStorage.getItem('saveFile');
+		// stupid edge cases
+		if (loadedFile == undefined || loadedFile == "undefined") {
+			this.file = {
+				score: 0,
+				muted: false
+			};
+			return;
+		}
+		this.file = JSON.parse(loadedFile);
 	}
 
 	updateScore(increment) {
 		// Updates the score and stores the new value in the localStorage
-		this.score += increment;
-		this.scoreText.setText("Score: " + this.score);
-		localStorage.setItem('score', this.score);
-	}
-
-	init(data) {
-		this.file = undefined;
+		this.file.score += increment;
+		this.scoreText.setText("Score: " + this.file.score);
+		localStorage.setItem('score', this.file.score);
+		this.saveFile();
 	}
 
 	create() {
@@ -38,15 +52,25 @@ class Cache extends Phaser.Scene {
 	}
 
 	preload() {
-
+		this.loadFile();
 	}
 
 	create() {
-
+		this.muteButton = this.add.rectangle(1300, 50, 100, 100, 0xFFFFFF).setInteractive();
+		this.muteButton.on('pointerdown', () => {
+			this.setMuted(!this.file.muted);
+			this.tweens.add({
+				targets: this.muteButton,
+				scaleX: 0.9,
+				scaleY: 0.9,
+				duration: 50,
+				yoyo: true
+			});
+		});
 	}
 }
 
-class SceneLoader extends Cache {
+class SceneLoader extends SceneCache {
 	preloadImage(image) {
 		this.load.image(image, "assets/" + image + ".png");
 	}
@@ -56,7 +80,7 @@ class SceneLoader extends Cache {
 	}
 
 	readTextFile(file, callback) {
-		var rawFile = new XMLHttpRequest();
+		let rawFile = new XMLHttpRequest();
 		rawFile.overrideMimeType("application/json");
 		rawFile.open("GET", file, true);
 		rawFile.onreadystatechange = function () {
@@ -68,12 +92,11 @@ class SceneLoader extends Cache {
 	}
 
 	preload() {
-		//usage:
+		// Loads the object config data from a JSON file.  Prefab1
 		this.readTextFile("./data.json", (text) => {
 			this.data = JSON.parse(text);
-			console.log(this.data["leftButton"].asset);
-			console.log(this.data["leftButton"].speed);
 		});
+		super.preload();
 	}
 
 	create() {
