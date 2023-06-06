@@ -1,18 +1,16 @@
 // Satisfies requirement of Data-driven experience progression prefab3
 
+// dont forget to squash commit dave
+
+// implement some kind of bullshit progression system with physics
+
 // Scene Subclasses prefab2
 class SceneCache extends Phaser.Scene {
-	setScore() {
-		this.file.score = parseInt(localStorage.getItem('score')) || 0;
-		this.scoreText.setText("Score: " + this.file.score);
-		this.saveFile();
-	}
-
 	setMuted(muted) {
 		this.file.muted = muted;
-		this.sound.mute = this.file.muted;
 		localStorage.setItem('muted', this.file.muted);
 		this.saveFile();
+		this.sound.setMute(muted);
 	}
 
 	saveFile() {
@@ -28,20 +26,12 @@ class SceneCache extends Phaser.Scene {
 		// stupid edge cases
 		if (loadedFile == undefined || loadedFile == "undefined") {
 			this.file = {
-				score: 0,
 				muted: false
 			};
 			return;
 		}
 		this.file = JSON.parse(loadedFile);
-	}
-
-	updateScore(increment) {
-		// Updates the score and stores the new value in the localStorage
-		this.file.score += increment;
-		this.scoreText.setText("Score: " + this.file.score);
-		localStorage.setItem('score', this.file.score);
-		this.saveFile();
+		this.setMuted(this.file.muted);
 	}
 
 	create() {
@@ -53,6 +43,8 @@ class SceneCache extends Phaser.Scene {
 
 	preload() {
 		this.loadFile();
+		this.load.video("sky", "skyBackground.mp4");
+		this.canvas = this.sys.game.canvas;
 	}
 
 	create() {
@@ -71,14 +63,6 @@ class SceneCache extends Phaser.Scene {
 }
 
 class SceneLoader extends SceneCache {
-	preloadImage(image) {
-		this.load.image(image, "assets/" + image + ".png");
-	}
-
-	preloadAnimation(image) {
-		this.load.image(image, "assets/animations/" + image + ".png");
-	}
-
 	readTextFile(file, callback) {
 		let rawFile = new XMLHttpRequest();
 		rawFile.overrideMimeType("application/json");
@@ -92,6 +76,8 @@ class SceneLoader extends SceneCache {
 	}
 
 	preload() {
+		this.load.audio("boop", "boop.mp3");
+		this.load.audio("bgm", "bgm_repeated.mp3");
 		// Loads the object config data from a JSON file.  Prefab1
 		this.readTextFile("./data.json", (text) => {
 			this.data = JSON.parse(text);
@@ -99,20 +85,17 @@ class SceneLoader extends SceneCache {
 		super.preload();
 	}
 
-	create() {
-		this.scoreText = this.add.text(50, 850, "Score: 0", {
-			font: "50px Arial",
-			fill: "#ffffff",
-			stroke: "#000000",
-			strokeThickness: 5,
-			align: "center"
-		}).setWordWrapWidth(1300);
+	playSound(key, volume) {
+		this.sound.add(key).setVolume(volume).play();
+	}
 
-		this.setScore();
+	create() {
+		this.video = this.add.video(this.canvas.width / 2, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
+		this.video.play(true);
 
 		this.logo = this.add.rectangle(400, 300, 100, 100, 0xFFFFFF).setInteractive();
 		this.logo.on('pointerdown', () => {
-			this.updateScore(10);
+			this.playSound("boop", 0.8);
 			this.tweens.add(
 				{
 					targets: this.logo,
@@ -122,6 +105,10 @@ class SceneLoader extends SceneCache {
 					yoyo: true
 				}
 			);
+		});
+		this.bgm = this.sound.play("bgm", {
+			loop: true,
+			volume: 0.5
 		});
 		super.create();
 	}
@@ -146,7 +133,7 @@ const game = new Phaser.Game({
 		mode: Phaser.Scale.FIT,
 		autoCenter: Phaser.Scale.CENTER_BOTH,
 		width: 1400,
-		height: 1080
+		height: 780
 	},
 	physics: {
 		default: 'arcade',
