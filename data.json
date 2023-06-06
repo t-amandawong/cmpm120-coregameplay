@@ -1,0 +1,18 @@
+{
+	"leftButton": {
+		"asset": "left.png",
+		"speed": 50
+	},
+	"rightButton": {
+		"asset": "right.png",
+		"speed": 50
+	},
+	"upButton": {
+		"asset": "up.png",
+		"speed": 25
+	},
+	"downButton": {
+		"asset": "down.png",
+		"speed": 50
+	}
+}
