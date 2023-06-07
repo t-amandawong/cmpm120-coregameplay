@@ -48,6 +48,7 @@ class SceneCache extends Phaser.Scene {
 	preload() {
 		this.loadFile();
 		this.load.video("sky", "skyBackground.mp4");
+		this.load.video("night", "night.mp4");
 		this.canvas = this.sys.game.canvas;
 	}
 
@@ -238,7 +239,7 @@ class SceneLoader extends SceneCache {
 	DoDarkMode() {
 		// TODO use a night sky here start the sky again
 		this.sceneContainer.removeAll();
-		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
+		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "night").setScale(4.05);
 		this.video.play(true);
 		this.lightMode = false;
 		this.dayButton = this.add.rectangle(700, 565, 100, 100, 0xFFFFFF).setInteractive().setStrokeStyle(5, 0x000000);
