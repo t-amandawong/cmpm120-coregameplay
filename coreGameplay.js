@@ -7,11 +7,21 @@
 
 // Scene Subclasses prefab2
 class SceneCache extends Phaser.Scene {
+	constructor(sceneName) {
+		super(sceneName);
+	}
+
 	setMuted(muted) {
 		this.file.muted = muted;
 		localStorage.setItem('muted', this.file.muted);
 		this.saveFile();
 		this.sound.setMute(muted);
+	}
+
+	updateFullscreen(fullscreen) {
+		this.file.fullscreen = fullscreen;
+		localStorage.setItem('fullscreen', this.file.fullscreen);
+		this.saveFile();
 	}
 
 	saveFile() {
@@ -33,13 +43,6 @@ class SceneCache extends Phaser.Scene {
 		}
 		this.file = JSON.parse(loadedFile);
 		this.setMuted(this.file.muted);
-	}
-
-	create() {
-	}
-
-	constructor() {
-		super("Cache");
 	}
 
 	preload() {
@@ -64,6 +67,9 @@ class SceneCache extends Phaser.Scene {
 }
 
 class SceneLoader extends SceneCache {
+	constructor(sceneName) {
+		super(sceneName);
+	}
 	readTextFile(file, callback) {
 		let rawFile = new XMLHttpRequest();
 		rawFile.overrideMimeType("application/json");
@@ -87,7 +93,7 @@ class SceneLoader extends SceneCache {
 	}
 
 	create() {
-		this.video = this.add.video(this.canvas.width / 2, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
+		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
 		this.video.play(true);
 
 		this.logo = this.add.rectangle(400, 300, 100, 100, 0xFFFFFF).setInteractive();
@@ -103,18 +109,41 @@ class SceneLoader extends SceneCache {
 				}
 			);
 		});
+
+		this.fullscreenbutton = this.add.rectangle(400, 500, 100, 100, 0x000000).setInteractive();
+		this.fullscreenbutton.on('pointerdown', () => {
+			this.boop.play();
+			this.tweens.add(
+				{
+					targets: this.fullscreenbutton,
+					scaleX: 0.9,
+					scaleY: 0.9,
+					duration: 50,
+					yoyo: true
+				});
+				this.updateFullscreen(!this.file.fullscreen);
+				if (this.file.fullscreen) {
+					this.scale.startFullscreen();
+				} else {
+					this.scale.stopFullscreen();
+				}
+
+		});
 		this.bgm = this.sound.play("bgm", {
 			loop: true,
 			volume: 0.5
 		});
 		this.boop = this.sound.add("boop");
 		super.create();
+		if (this.file.fullscreen) {
+			this.scale.startFullscreen();
+		}
 	}
 }
 
-class Intro extends SceneLoader {
+class Gameplay extends SceneLoader {
 	constructor() {
-		super("Intro");
+		super("Gameplay");
 	}
 
 	preload() {
@@ -123,6 +152,23 @@ class Intro extends SceneLoader {
 
 	create() {
 		super.create();
+	}
+}
+
+class Intro extends Phaser.Scene {
+	constructor() {
+		super("Intro");
+	}
+
+	create() {
+		this.add.text(20, 20, "Intro Scene.  Click so I have permission to do stuff", {
+			font: "25px Arial",
+			fill: "yellow"
+			});
+		// on pointer down, go to the gameplay scene
+		this.input.on('pointerdown', () => {
+			this.scene.start("Gameplay");
+		});
 	}
 }
 
@@ -143,6 +189,6 @@ const game = new Phaser.Game({
 			}
 		}
 	},
-	scene: [Intro],
+	scene: [Intro, Gameplay],
 	title: "CMPM 120 Core Gameplay",
 });
