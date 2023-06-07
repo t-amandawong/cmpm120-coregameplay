@@ -2,6 +2,7 @@
 
 // dont forget to squash commit dave
 
+// Get an image for the button and player
 // implement some kind of bullshit progression system with physics
 
 // Scene Subclasses prefab2
