@@ -157,7 +157,6 @@ class SceneLoader extends SceneCache {
 			volume: 0.5
 		});
 		this.boop = this.sound.add("boop");
-		super.create();
 		this.muteText = this.add.text(this.canvas.width - 55, 50, "Mute", {
 			fontFamily: "Arial",
 			fontSize: 50,
@@ -199,6 +198,7 @@ class SceneLoader extends SceneCache {
 		this.physics.add.existing(this.victoryButton, false).body.setImmovable(true);
 		this.physics.add.collider(this.player, this.victoryButton, () => {
 			this.scene.start("Gameplay");
+			this.sound.stopAll();
 		});
 		this.DoLightMode();
 	}
@@ -294,13 +294,13 @@ class Gameplay extends SceneLoader {
 	}
 }
 
-class Intro extends SceneCache {
+class Intro extends Phaser.Scene {
 	constructor() {
 		super("Intro");
 	}
 
 	create() {
-		this.add.text(this.canvas.width / 2 - 300, this.canvas.height / 2 - 50, "Click/Press to play", {
+		this.add.text(this.sys.game.canvas.width / 2 - 300, this.sys.game.canvas.height / 2 - 50, "Click/Press to play", {
 			font: "75px Arial",
 			color: "#FFFFFF"
 		});
