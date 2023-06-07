@@ -167,7 +167,7 @@ class SceneLoader extends SceneCache {
 			);
 		});
 
-		this.fullscreenbutton = this.add.rectangle(400, 500, 100, 100, 0x000000).setInteractive();
+		this.fullscreenbutton = this.add.rectangle(50, this.canvas.height - 50, 100, 100, 0x000000).setInteractive();
 		this.fullscreenbutton.on('pointerdown', () => {
 			this.boop.play();
 			this.tweens.add(
@@ -186,6 +186,11 @@ class SceneLoader extends SceneCache {
 			}
 
 		});
+		this.fullscreenText = this.add.text(50, this.canvas.height - 50, "Fullscreen", {
+			fontFamily: "Arial",
+			fontSize: 20,
+			color: "#FFFFFF"
+		}).setOrigin(0.5, 0.5);
 		this.bgm = this.sound.play("bgm", {
 			loop: true,
 			volume: 0.5
