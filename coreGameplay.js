@@ -52,7 +52,7 @@ class SceneCache extends Phaser.Scene {
 	}
 
 	create() {
-		this.muteButton = this.add.rectangle(1300, 50, 100, 100, 0xFFFFFF).setInteractive();
+		this.muteButton = this.add.rectangle(this.canvas.width - 50, 50, 100, 100, 0xFFFFFF).setInteractive();
 		this.muteButton.on('pointerdown', () => {
 			this.setMuted(!this.file.muted);
 			this.tweens.add({
@@ -119,7 +119,7 @@ class SceneLoader extends SceneCache {
 					yoyo: false
 				});
 			});
-	
+
 			this.button.get(key).on('pointerout', () => {
 				this.player.setVelocity(0, 0);
 				this.tweens.add({
@@ -140,63 +140,46 @@ class SceneLoader extends SceneCache {
 		this.load.image("npcGoon", "FrontIdle.png");
 		super.preload();
 	}
-	registerInputHandlers() {
-		this.wKey = this.input.keyboard.addKey('W');
-		this.aKey = this.input.keyboard.addKey('A');
-		this.sKey = this.input.keyboard.addKey('S');
-		this.dKey = this.input.keyboard.addKey('D');
-		this.fKey = this.input.keyboard.addKey('F');
-		this.enterKey = this.input.keyboard.addKey('ENTER');
-	}
+
 	create() {
-		this.registerInputHandlers();
 		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
 		this.video.play(true);
-
-		this.logo = this.add.rectangle(400, 300, 100, 100, 0xFFFFFF).setInteractive();
-		this.logo.on('pointerdown', () => {
-			this.boop.play();
-			this.tweens.add(
-				{
-					targets: this.logo,
-					scaleX: 0.9,
-					scaleY: 0.9,
-					duration: 50,
-					yoyo: true
-				}
-			);
-		});
 
 		this.fullscreenbutton = this.add.rectangle(50, this.canvas.height - 50, 100, 100, 0x000000).setInteractive();
 		this.fullscreenbutton.on('pointerdown', () => {
 			this.boop.play();
-			this.tweens.add(
-				{
-					targets: this.fullscreenbutton,
-					scaleX: 0.9,
-					scaleY: 0.9,
-					duration: 50,
-					yoyo: true
-				});
+			this.tweens.add({
+				targets: this.fullscreenbutton,
+				scaleX: 0.9,
+				scaleY: 0.9,
+				duration: 50,
+				yoyo: true
+			});
 			this.updateFullscreen(!this.file.fullscreen);
 			if (this.file.fullscreen) {
 				this.scale.startFullscreen();
 			} else {
 				this.scale.stopFullscreen();
 			}
-
 		});
 		this.fullscreenText = this.add.text(50, this.canvas.height - 50, "Fullscreen", {
 			fontFamily: "Arial",
 			fontSize: 20,
 			color: "#FFFFFF"
 		}).setOrigin(0.5, 0.5);
+
 		this.bgm = this.sound.play("bgm", {
 			loop: true,
 			volume: 0.5
 		});
 		this.boop = this.sound.add("boop");
 		super.create();
+		this.muteText = this.add.text(this.canvas.width - 50, 50, "Mute", {
+			fontFamily: "Arial",
+			fontSize: 20,
+			color: "#000000"
+		}).setOrigin(0.5, 0.5);
+
 		if (this.file.fullscreen) {
 			this.scale.startFullscreen();
 		}
