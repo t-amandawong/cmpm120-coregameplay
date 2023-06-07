@@ -142,9 +142,6 @@ class SceneLoader extends SceneCache {
 	}
 
 	create() {
-		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
-		this.video.play(true);
-
 		this.fullscreenbutton = this.add.rectangle(50, this.canvas.height - 50, 100, 100, 0x000000).setInteractive();
 		this.fullscreenbutton.on('pointerdown', () => {
 			this.boop.play();
@@ -188,9 +185,98 @@ class SceneLoader extends SceneCache {
 			this.data = JSON.parse(text);
 			this.renderButtons();
 		});
-		this.player = this.physics.add.sprite(400, 300, "npcGoon")
+		this.player = this.physics.add.sprite(100, 400, "npcGoon")
 			.setCollideWorldBounds(true)
 			.setMaxVelocity(200, 200);
+		this.bottomFloor = this.add.rectangle(310, (this.canvas.height / 2) + 150, this.canvas.width + 200, 10, 0x000000);
+		this.physics.add.existing(this.bottomFloor, false).body.setImmovable(true);
+		this.physics.add.collider(this.player, this.bottomFloor);
+
+		this.ceiling = this.add.rectangle(310, (this.canvas.height / 2) - 150, this.canvas.width + 200, 10, 0x000000);
+		this.physics.add.existing(this.ceiling, false).body.setImmovable(true);
+		this.physics.add.collider(this.player, this.ceiling);
+		this.sceneContainer = this.add.container(0, 0);
+		this.victoryButton = this.add.rectangle(1082, 365, 50, 100, 0xFF0000).setInteractive();
+		this.physics.add.existing(this.victoryButton, false).body.setImmovable(true);
+		this.physics.add.collider(this.player, this.victoryButton, () => {
+			this.scene.start("Gameplay");
+		});
+		this.DoLightMode();
+	}
+
+	DoLightMode() {
+		// start the sky again
+		this.sceneContainer.removeAll();
+		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
+		this.video.play(true);
+		this.lightMode = true;
+		this.nightButton = this.add.rectangle(300, 565, 100, 100, 0x000000).setInteractive().setStrokeStyle(5, 0xFFFFFF);
+
+		this.lightWall = this.add.rectangle(450, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0xFFFFFF);
+		this.physics.add.existing(this.lightWall, false).body.setImmovable(true);
+		this.physics.add.collider(this.player, this.lightWall);
+		this.sceneContainer.add(this.video);
+		this.sceneContainer.add(this.lightWall);
+		this.sceneContainer.add(this.nightButton);
+		this.sceneContainer.add(this.bottomFloor);
+		this.sceneContainer.add(this.ceiling);
+		this.sceneContainer.add(this.player);
+		this.sceneContainer.add(this.fullscreenbutton);
+		this.sceneContainer.add(this.fullscreenText);
+		this.sceneContainer.add(this.muteText);
+		this.sceneContainer.add(this.muteButton);
+		this.sceneContainer.add(this.victoryButton);
+		this.sceneContainer.bringToTop(this.victoryButton);
+		this.sceneContainer.bringToTop(this.player);
+		this.sceneContainer.bringToTop(this.fullscreenbutton);
+		this.sceneContainer.bringToTop(this.fullscreenText);
+		this.sceneContainer.bringToTop(this.muteText);
+		this.sceneContainer.bringToTop(this.muteButton);
+		this.sceneContainer.sendToBack(this.video);
+	}
+
+	DoDarkMode() {
+		// TODO use a night sky here start the sky again
+		this.sceneContainer.removeAll();
+		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
+		this.video.play(true);
+		this.lightMode = false;
+		this.dayButton = this.add.rectangle(700, 565, 100, 100, 0xFFFFFF).setInteractive().setStrokeStyle(5, 0x000000);
+
+		this.darkWall = this.add.rectangle(750, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0x000000);
+		this.physics.add.existing(this.darkWall, false).body.setImmovable(true);
+		this.physics.add.collider(this.player, this.darkWall);
+		this.sceneContainer.add(this.video);
+		this.sceneContainer.add(this.darkWall);
+		this.sceneContainer.add(this.dayButton);
+		this.sceneContainer.add(this.bottomFloor);
+		this.sceneContainer.add(this.ceiling);
+		this.sceneContainer.add(this.player);
+		this.sceneContainer.add(this.fullscreenbutton);
+		this.sceneContainer.add(this.fullscreenText);
+		this.sceneContainer.add(this.muteText);
+		this.sceneContainer.add(this.muteButton);
+		this.sceneContainer.bringToTop(this.player);
+		this.sceneContainer.bringToTop(this.fullscreenbutton);
+		this.sceneContainer.bringToTop(this.fullscreenText);
+		this.sceneContainer.bringToTop(this.muteText);
+		this.sceneContainer.bringToTop(this.muteButton);
+		this.sceneContainer.sendToBack(this.video);
+	}
+
+	update() {
+		// if the player is intersecting with the night button, change the background to night
+		if (this.lightMode && Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.nightButton.getBounds())) {
+			this.video.destroy();
+			this.nightButton.destroy();
+			this.lightWall.destroy();
+			this.DoDarkMode();
+		} else if (!this.lightMode && Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), this.dayButton.getBounds())) {
+			this.video.destroy();
+			this.dayButton.destroy();
+			this.darkWall.destroy();
+			this.DoLightMode();
+		}
 	}
 }
 
