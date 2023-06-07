@@ -51,20 +51,6 @@ class SceneCache extends Phaser.Scene {
 		this.load.video("night", "night.mp4");
 		this.canvas = this.sys.game.canvas;
 	}
-
-	create() {
-		// this.muteButton = this.add.rectangle(this.canvas.width - 50, 50, 100, 100, 0xFFFFFF).setInteractive();
-		// this.muteButton.on('pointerdown', () => {
-		// 	this.setMuted(!this.file.muted);
-		// 	this.tweens.add({
-		// 		targets: this.muteButton,
-		// 		scaleX: 0.9,
-		// 		scaleY: 0.9,
-		// 		duration: 50,
-		// 		yoyo: true
-		// 	});
-		// });
-	}
 }
 
 class SceneLoader extends SceneCache {
@@ -308,15 +294,15 @@ class Gameplay extends SceneLoader {
 	}
 }
 
-class Intro extends Phaser.Scene {
+class Intro extends SceneCache {
 	constructor() {
 		super("Intro");
 	}
 
 	create() {
-		this.add.text(20, 20, "Intro Scene.  Click so I have permission to do stuff", {
-			font: "25px Arial",
-			fill: "yellow"
+		this.add.text(this.canvas.width / 2 - 300, this.canvas.height / 2 - 50, "Click/Press to play", {
+			font: "75px Arial",
+			color: "#FFFFFF"
 		});
 		// on pointer down, go to the gameplay scene
 		this.input.on('pointerdown', () => {
