@@ -201,11 +201,11 @@ class SceneLoader extends SceneCache {
 		this.player = this.physics.add.sprite(100, 400, "npcGoon")
 			.setCollideWorldBounds(true)
 			.setMaxVelocity(200, 200);
-		this.bottomFloor = this.add.rectangle(310, (this.canvas.height / 2) + 150, this.canvas.width + 200, 10, 0x000000);
+		this.bottomFloor = this.add.rectangle(310, (this.canvas.height / 2) + 150, this.canvas.width + 200, 10, 0xFFFFFF);
 		this.physics.add.existing(this.bottomFloor, false).body.setImmovable(true);
 		this.physics.add.collider(this.player, this.bottomFloor);
 
-		this.ceiling = this.add.rectangle(310, (this.canvas.height / 2) - 150, this.canvas.width + 200, 10, 0x000000);
+		this.ceiling = this.add.rectangle(310, (this.canvas.height / 2) - 150, this.canvas.width + 200, 10, 0xFFFFFF);
 		this.physics.add.existing(this.ceiling, false).body.setImmovable(true);
 		this.physics.add.collider(this.player, this.ceiling);
 		this.sceneContainer = this.add.container(0, 0);
@@ -226,6 +226,8 @@ class SceneLoader extends SceneCache {
 		this.nightButton = this.add.rectangle(300, 565, 100, 100, 0x000000).setInteractive();
 
 		this.lightWall = this.add.rectangle(450, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0xFFFFFF);
+		this.bottomFloor.setFillStyle(0xFFFFFF);
+		this.ceiling.setFillStyle(0xFFFFFF);
 		this.physics.add.existing(this.lightWall, false).body.setImmovable(true);
 		this.physics.add.collider(this.player, this.lightWall);
 		this.sceneContainer.add(this.video);
@@ -254,9 +256,9 @@ class SceneLoader extends SceneCache {
 		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "night").setScale(4.05);
 		this.video.play(true);
 		this.lightMode = false;
-		this.dayButton = this.add.rectangle(700, 365, 100, 100, 0xFFFFFF).setInteractive().setStrokeStyle(5, 0x000000);
+		this.dayButton = this.add.rectangle(700, 365, 100, 100, 0xFFFFFF).setInteractive().setStrokeStyle(5, 0xFFFFFF);
 
-		this.darkWall = this.add.rectangle(750, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0x000000);
+		this.darkWall = this.add.rectangle(750, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0xFFFFFF);
 		this.physics.add.existing(this.darkWall, false).body.setImmovable(true);
 		this.physics.add.collider(this.player, this.darkWall);
 		this.sceneContainer.add(this.video);
@@ -333,7 +335,7 @@ const game = new Phaser.Game({
 	physics: {
 		default: 'arcade',
 		arcade: {
-			debug: true,
+			debug: false,
 			gravity: {
 				x: 0,
 				y: 0
