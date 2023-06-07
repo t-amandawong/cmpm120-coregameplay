@@ -85,17 +85,13 @@ class SceneLoader extends SceneCache {
 		super.preload();
 	}
 
-	playSound(key, volume) {
-		this.sound.add(key).setVolume(volume).play();
-	}
-
 	create() {
 		this.video = this.add.video(this.canvas.width / 2, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
 		this.video.play(true);
 
 		this.logo = this.add.rectangle(400, 300, 100, 100, 0xFFFFFF).setInteractive();
 		this.logo.on('pointerdown', () => {
-			this.playSound("boop", 0.8);
+			this.boop.play();
 			this.tweens.add(
 				{
 					targets: this.logo,
@@ -110,6 +106,7 @@ class SceneLoader extends SceneCache {
 			loop: true,
 			volume: 0.5
 		});
+		this.boop = this.sound.add("boop");
 		super.create();
 	}
 }
