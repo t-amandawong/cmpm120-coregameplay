@@ -53,17 +53,17 @@ class SceneCache extends Phaser.Scene {
 	}
 
 	create() {
-		this.muteButton = this.add.rectangle(this.canvas.width - 50, 50, 100, 100, 0xFFFFFF).setInteractive();
-		this.muteButton.on('pointerdown', () => {
-			this.setMuted(!this.file.muted);
-			this.tweens.add({
-				targets: this.muteButton,
-				scaleX: 0.9,
-				scaleY: 0.9,
-				duration: 50,
-				yoyo: true
-			});
-		});
+		// this.muteButton = this.add.rectangle(this.canvas.width - 50, 50, 100, 100, 0xFFFFFF).setInteractive();
+		// this.muteButton.on('pointerdown', () => {
+		// 	this.setMuted(!this.file.muted);
+		// 	this.tweens.add({
+		// 		targets: this.muteButton,
+		// 		scaleX: 0.9,
+		// 		scaleY: 0.9,
+		// 		duration: 50,
+		// 		yoyo: true
+		// 	});
+		// });
 	}
 }
 
@@ -172,11 +172,23 @@ class SceneLoader extends SceneCache {
 		});
 		this.boop = this.sound.add("boop");
 		super.create();
-		this.muteText = this.add.text(this.canvas.width - 50, 50, "Mute", {
+		this.muteText = this.add.text(this.canvas.width - 55, 50, "Mute", {
 			fontFamily: "Arial",
-			fontSize: 20,
-			color: "#000000"
+			fontSize: 50,
+			color: "#FFFFFF"
 		}).setOrigin(0.5, 0.5);
+
+		this.muteText.setInteractive();
+		this.muteText.on('pointerdown', () => {
+			this.setMuted(!this.file.muted);
+			this.tweens.add({
+				targets: this.muteText,
+				scaleX: 0.9,
+				scaleY: 0.9,
+				duration: 50,
+				yoyo: true
+			});
+		});
 
 		if (this.file.fullscreen) {
 			this.scale.startFullscreen();
@@ -225,14 +237,14 @@ class SceneLoader extends SceneCache {
 		this.sceneContainer.add(this.fullscreenbutton);
 		this.sceneContainer.add(this.fullscreenText);
 		this.sceneContainer.add(this.muteText);
-		this.sceneContainer.add(this.muteButton);
+		// this.sceneContainer.add(this.muteButton);
 		this.sceneContainer.add(this.victoryButton);
 		this.sceneContainer.bringToTop(this.victoryButton);
 		this.sceneContainer.bringToTop(this.player);
 		this.sceneContainer.bringToTop(this.fullscreenbutton);
 		this.sceneContainer.bringToTop(this.fullscreenText);
 		this.sceneContainer.bringToTop(this.muteText);
-		this.sceneContainer.bringToTop(this.muteButton);
+		// this.sceneContainer.bringToTop(this.muteButton);
 		this.sceneContainer.sendToBack(this.video);
 	}
 
@@ -256,13 +268,12 @@ class SceneLoader extends SceneCache {
 		this.sceneContainer.add(this.fullscreenbutton);
 		this.sceneContainer.add(this.fullscreenText);
 		this.sceneContainer.add(this.muteText);
-		this.sceneContainer.add(this.muteButton);
 		this.sceneContainer.bringToTop(this.player);
 		this.sceneContainer.bringToTop(this.fullscreenbutton);
 		this.sceneContainer.bringToTop(this.fullscreenText);
 		this.sceneContainer.bringToTop(this.muteText);
-		this.sceneContainer.bringToTop(this.muteButton);
 		this.sceneContainer.sendToBack(this.video);
+		// this.sceneContainer.sendToBack(this.muteButton);
 	}
 
 	update() {
