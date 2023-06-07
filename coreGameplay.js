@@ -223,7 +223,7 @@ class SceneLoader extends SceneCache {
 		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
 		this.video.play(true);
 		this.lightMode = true;
-		this.nightButton = this.add.rectangle(300, 565, 100, 100, 0x000000).setInteractive();
+		this.nightButton = this.add.rectangle(300, 530, 100, 20, 0x000000).setInteractive();
 
 		this.lightWall = this.add.rectangle(450, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0xFFFFFF);
 		this.bottomFloor.setFillStyle(0xFFFFFF);
@@ -256,7 +256,7 @@ class SceneLoader extends SceneCache {
 		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "night").setScale(4.05);
 		this.video.play(true);
 		this.lightMode = false;
-		this.dayButton = this.add.rectangle(700, 365, 100, 100, 0xFFFFFF).setInteractive().setStrokeStyle(5, 0xFFFFFF);
+		this.dayButton = this.add.rectangle(700, 255, 100, 20, 0xFFFFFF).setInteractive().setStrokeStyle(5, 0xFFFFFF);
 
 		this.darkWall = this.add.rectangle(750, (this.canvas.height / 2) - 150, 10, this.canvas.width + 200, 0xFFFFFF);
 		this.physics.add.existing(this.darkWall, false).body.setImmovable(true);
