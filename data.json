@@ -1,18 +1,36 @@
 {
+	"playerSpeed": 150,
+	"buttonCenter":{
+		"x": 1258,
+		"y": 517,
+		"delta": 90
+	},
 	"leftButton": {
-		"asset": "left.png",
-		"speed": 50
+		"asset": "button.png",
+		"speed": 50,
+		"rotation": 0,
+		"x": -1,
+		"y": 0
 	},
 	"rightButton": {
-		"asset": "right.png",
-		"speed": 50
+		"asset": "button.png",
+		"speed": 50,
+		"rotation": 180,
+		"x": 1,
+		"y": 0
 	},
 	"upButton": {
-		"asset": "up.png",
-		"speed": 25
+		"asset": "button.png",
+		"speed": 25,
+		"rotation": 90,
+		"x": 0,
+		"y": -1
 	},
 	"downButton": {
-		"asset": "down.png",
-		"speed": 50
+		"asset": "button.png",
+		"speed": 50,
+		"rotation": 270,
+		"x": 0,
+		"y": 1
 	}
 }

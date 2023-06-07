@@ -82,17 +82,74 @@ class SceneLoader extends SceneCache {
 		rawFile.send(null);
 	}
 
+	renderButtons() {
+		console.log(this.data);
+		// iterate through the this.data map
+		let buttonCenter = {
+			x: this.data["buttonCenter"].x,
+			y: this.data["buttonCenter"].y,
+			delta: this.data["buttonCenter"].delta
+		}
+		this.button = new Map();
+		for (let key in this.data) {
+			// create a button for each key
+			this.button.set(key,
+				this.add.image(buttonCenter.x + (this.data[key].x * buttonCenter.delta), buttonCenter.y + (this.data[key].y * buttonCenter.delta), "button", 0x000000)
+					.setInteractive().setScale(1.5));
+			// rotate the button to the correct angle
+			this.button.get(key).setAngle(this.data[key].rotation);
+			this.button.get(key).on('pointerdown', () => {
+				this.boop.play();
+				this.tweens.add({
+					targets: this.button.get(key),
+					scaleX: 1.2,
+					scaleY: 1.2,
+					duration: 50,
+					yoyo: false
+				});
+				this.player.setVelocity(this.data[key].x * this.data.playerSpeed, this.data[key].y * this.data.playerSpeed);
+			});
+			this.button.get(key).on('pointerup', () => {
+				this.player.setVelocity(0, 0);
+				this.tweens.add({
+					targets: this.button.get(key),
+					scaleX: 1.5,
+					scaleY: 1.5,
+					duration: 50,
+					yoyo: false
+				});
+			});
+	
+			this.button.get(key).on('pointerout', () => {
+				this.player.setVelocity(0, 0);
+				this.tweens.add({
+					targets: this.button.get(key),
+					scaleX: 1.5,
+					scaleY: 1.5,
+					duration: 50,
+					yoyo: false
+				});
+			});
+		}
+	}
+
 	preload() {
 		this.load.audio("boop", "boop.mp3");
 		this.load.audio("bgm", "bgm_repeated.mp3");
-		// Loads the object config data from a JSON file.  Prefab1
-		this.readTextFile("./data.json", (text) => {
-			this.data = JSON.parse(text);
-		});
+		this.load.image("button", "button.png");
+		this.load.image("npcGoon", "FrontIdle.png");
 		super.preload();
 	}
-
+	registerInputHandlers() {
+		this.wKey = this.input.keyboard.addKey('W');
+		this.aKey = this.input.keyboard.addKey('A');
+		this.sKey = this.input.keyboard.addKey('S');
+		this.dKey = this.input.keyboard.addKey('D');
+		this.fKey = this.input.keyboard.addKey('F');
+		this.enterKey = this.input.keyboard.addKey('ENTER');
+	}
 	create() {
+		this.registerInputHandlers();
 		this.video = this.add.video(this.canvas.width / 2 - 800, (this.canvas.height / 2) + 270, "sky").setScale(4.05);
 		this.video.play(true);
 
@@ -121,12 +178,12 @@ class SceneLoader extends SceneCache {
 					duration: 50,
 					yoyo: true
 				});
-				this.updateFullscreen(!this.file.fullscreen);
-				if (this.file.fullscreen) {
-					this.scale.startFullscreen();
-				} else {
-					this.scale.stopFullscreen();
-				}
+			this.updateFullscreen(!this.file.fullscreen);
+			if (this.file.fullscreen) {
+				this.scale.startFullscreen();
+			} else {
+				this.scale.stopFullscreen();
+			}
 
 		});
 		this.bgm = this.sound.play("bgm", {
@@ -138,6 +195,14 @@ class SceneLoader extends SceneCache {
 		if (this.file.fullscreen) {
 			this.scale.startFullscreen();
 		}
+		// Loads the object config data from a JSON file.  Prefab1
+		this.readTextFile("./data.json", (text) => {
+			this.data = JSON.parse(text);
+			this.renderButtons();
+		});
+		this.player = this.physics.add.sprite(400, 300, "npcGoon")
+			.setCollideWorldBounds(true)
+			.setMaxVelocity(200, 200);
 	}
 }
 
@@ -164,7 +229,7 @@ class Intro extends Phaser.Scene {
 		this.add.text(20, 20, "Intro Scene.  Click so I have permission to do stuff", {
 			font: "25px Arial",
 			fill: "yellow"
-			});
+		});
 		// on pointer down, go to the gameplay scene
 		this.input.on('pointerdown', () => {
 			this.scene.start("Gameplay");
