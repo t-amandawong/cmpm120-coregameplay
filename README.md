@@ -14,8 +14,7 @@ https://t-amandawong.github.io/cmpm120-coregameplay/
 
 ## Progression
 - Game has a button which, when interacted with by the player, changes the scene from day to night and vice versa.
-- Color scheme matches the time of day you are in.  When the player clears the first demo stage, the stage repeats as we have no more stages implemented.
-- The players fullscreen and mute settings are also saved between sessions (fullscreen is applied after you click to start so we have permission to modify the screen status).
+- There will be a second stage that is more difficult to give a sense of progression for the player.
 
 ## Prefabs
 - A couple Base classes (SceneLoader, SceneCache) one of which takes care of loading stuff and the other takes care of the cache. Both are used for scenes.
